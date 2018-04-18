@@ -1,37 +1,48 @@
 from PIL import Image #Image class import from pil package
+import numpy as np
+import matplotlib.pyplot as plt
 
 img=Image.open(r"C:\Users\user\Desktop\Abhilash\Imp\CEERI\NN\800nm.png","r")
 pix_val = list(img.getdata())
-#pix_val_flat = [x for sets in pix_val for x in sets]
-print(pix_val)
-r = img.split()
-
-#creating an object of image class. now img is a pillow object
-#print(img.size) #size is a prop of the img obj created
-#print(img.format)
-#img.show()  # terminal cannot display image.what this fn does is that it temporarily sends/display the image in the default image viewer
-#the default viewer pops up on running the file
-
-#cropping the image..make sure to comment other portions bfre running
-#area=(100,100,300,375)
-#cropped_img=img.crop(area)
-#cropped_img.show() #img opens up in the imge viewer,the default in m laptop
-
-# Combining images together..comment the above to run this
-
-#within=Image.open("within.jpg")
-#new=Image.open("new1.jpg")
-#area=(100,100,1245,2041)
-#within.paste(new,area)
-#within.show()
-
-# working on pixels..every img is made up of r g b.
-
-#print(img.mode) # gives rgb
-
-"""r, g, b = img.split()  #it splits into 3 parts .three var..thrfre stored in 3 variables
-r.show()  #here all the three colors are not combined
-g.show()
-b.show()"""
-#red filter pixel values. Similarly for other channels
-#for every pixel take out its r, g, b values and take the average.
+arr = np.array(img.getdata())
+print(arr.shape)
+#print(arr)
+# extracting r component of each pixel
+r = np.zeros([len(arr)])
+g = np.zeros([len(arr)])
+b = np.zeros([len(arr)])
+avg = np.zeros([len(arr)])
+avg_float = avg.astype(np.float)
+alph = np.zeros([len(arr)])
+for i in range(0,len(arr)):
+    r[i] = arr[i][0]
+    g[i] = arr[i][1]
+    b[i] = arr[i][2]
+    avg_float[i] = (r[i]+b[i]+g[i])/3
+    alph[i] = arr[i][3]
+     
+print("r components")
+print(r,"\n")
+print("g components")
+print(g,"\n")
+print("b components")
+print(b,"\n")
+print("alp components")
+print(alph,"\n")
+#print("average of r components:\n",np.average(r))
+#print("average of g components:\n",np.average(g))
+#print("average of b components:\n",np.average(b))
+#print("average of alpha components:\n",np.average(alph))
+#r = img.split()
+#for i in range(0,len(avg_float)):
+  #  print(avg_float[i])
+#print(avg_float)
+plt.hist(avg_float, 50, normed=1, facecolor='r', alpha=0.75)
+#plt.hist(g, 50, normed=1, facecolor='g', alpha=0.75)
+#plt.hist(b, 50, normed=1, facecolor='b', alpha=0.75)
+plt.show
+plt.xlabel("Pixels ->")
+plt.title("Histogram of pixel values")
+plt.ylabel("Reflectance")
+plt.grid(True)
+plt.savefig(r"C:\Users\user\Desktop\Abhilash\Imp\CEERI\NN\histogram_plot.pdf")
