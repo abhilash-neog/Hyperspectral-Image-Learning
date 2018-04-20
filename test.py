@@ -2,10 +2,24 @@ from PIL import Image #Image class import from pil package
 import numpy as np
 import matplotlib.pyplot as plt
 
-img=Image.open(r"C:\Users\user\Desktop\Abhilash\Imp\CEERI\NN\800nm.png","r")
+img = Image.open(r"C:\Users\user\Desktop\Abhilash\Imp\CEERI\NN\700nm.png","r")
+#img2 = img.crop((0, 0, 100, 100))
 pix_val = list(img.getdata())
-arr = np.array(img.getdata())
-print(arr.shape)
+arr1 = np.array(img.getdata())
+#print(arr.shape)
+#img2.show()
+half_the_width = img.size[0] / 2
+half_the_height = img.size[1] / 2
+img4 = img.crop(
+    (
+        half_the_width - 18,
+        half_the_height - 36,
+        half_the_width + 44,
+        half_the_height + 32
+    )
+)
+img4.save("700_u.png")
+arr = np.array(img4.getdata())
 #print(arr)
 # extracting r component of each pixel
 r = np.zeros([len(arr)])
@@ -45,4 +59,4 @@ plt.xlabel("Pixels ->")
 plt.title("Histogram of pixel values")
 plt.ylabel("Reflectance")
 plt.grid(True)
-plt.savefig(r"C:\Users\user\Desktop\Abhilash\Imp\CEERI\NN\histogram_plot.pdf")
+plt.savefig(r"C:\Users\user\Desktop\Abhilash\Imp\CEERI\NN\700nm_updated.pdf")
