@@ -149,9 +149,9 @@ rootN = developN(img1,rootN,k)
 k=k+1
 #plt.hist(root, 50, normed=1, facecolor='r', alpha=0.75)
 plt.show
-x_axis = [1,2,3,4,5,6,7,8,9]
-plt.xlabel("Pixels ->")
-plt.title("Histogram of pixel values")
+x_axis = [600,650,700,750,800,850,900,950,1000]
+plt.xlabel("Increasing wavelength(nm) ->")
+plt.title("Reflectance vs Wavelength")
 plt.ylabel("Reflectance")
 plt.grid(True)
 plt.plot(x_axis,root,"bo-", label = "tumor")
