@@ -21,3 +21,5 @@ spec = matd[:,:,:3]
 #plt.axis('off')
 
 from spectral import *
+
+img = 
