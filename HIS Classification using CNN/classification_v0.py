@@ -13,9 +13,11 @@ df = pd.read_csv(r'C:\Users\user\Desktop\Abhilash\Imp\CEERI\NN\HIS Classificatio
 mat = sio.loadmat(r'C:\Users\user\Desktop\Abhilash\Imp\CEERI\NN\HIS Classification using CNN\data\Indian_pines_corrected.mat')
 #print(mat)
 matd = mat['indian_pines_corrected']
-//print(matd)
+#print(matd)
 
 import matplotlib.pyplot as plt
 spec = matd[:,:,:3]
-plt.imshow(spec)
-plt.axis('off')
+#plt.imshow(spec)
+#plt.axis('off')
+
+from spectral import *
