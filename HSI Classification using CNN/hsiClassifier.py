@@ -1,6 +1,7 @@
 from spectral import *
 from keras.layers import Dense, Conv2D
 from keras.models import Sequential, Model
+import scipy.io as sio
 
 img = open_image(r'C:\Users\user\Desktop\Abhilash\Imp\CEERI\NN\Hyperspectral Image Visualization\92AV3C.lan')
 
@@ -34,3 +35,7 @@ imgX = img.load()
 
 #imgX.shape
 #Out[10]: (145, 145, 220)
+
+#the target features
+gt = sio.loadmat(r'C:\Users\user\Desktop\Abhilash\Imp\CEERI\NN\HSI Classification using CNN\data\Indian_pines_gt.mat')
+gtd = gt['indian_pines_gt']#target

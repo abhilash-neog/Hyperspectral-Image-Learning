@@ -1,25 +1,20 @@
 import scipy.io as sio
 import pandas as pd
 
-matgt = sio.loadmat(r'C:\Users\user\Desktop\Abhilash\Imp\CEERI\NN\HIS Classification using CNN\data\Indian_pines_gt.mat')
+#matgt = sio.loadmat(r'C:\Users\user\Desktop\Abhilash\Imp\CEERI\NN\HIS Classification using CNN\data\Indian_pines_gt.mat')
 #print(mat)
-matxgt = matgt['indian_pines_gt']
+#matxgt = matgt['indian_pines_gt']
 #print(type(matxgt))
 #print(matxgt.shape)
 #145 * 145 pixels present each belonging to a particular class out of 16
 
-df = pd.read_csv(r'C:\Users\user\Desktop\Abhilash\Imp\CEERI\NN\HIS Classification using CNN\data\indian pines.csv')
+mat = sio.loadmat(r'C:\Users\user\Desktop\Abhilash\Imp\CEERI\NN\HSI Classification using CNN\data\Indian_pines_corrected.mat')
+#type(mat) ->dict
 
-mat = sio.loadmat(r'C:\Users\user\Desktop\Abhilash\Imp\CEERI\NN\HIS Classification using CNN\data\Indian_pines_corrected.mat')
-#print(mat)
-matd = mat['indian_pines_corrected']
-#print(matd)
+#loading the ground truth/class file
+gt = sio.loadmat(r'C:\Users\user\Desktop\Abhilash\Imp\CEERI\NN\HSI Classification using CNN\data\Indian_pines_gt.mat')
 
-import matplotlib.pyplot as plt
-spec = matd[:,:,:3]
-#plt.imshow(spec)
-#plt.axis('off')
+matd = mat['indian_pines_corrected']#pixel values
 
-from spectral import *
+gtd = gt['indian_pines_gt']#target
 
-img = 
