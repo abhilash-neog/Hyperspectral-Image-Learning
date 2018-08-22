@@ -1,6 +1,6 @@
 # Hyperspectral Image classification - identification of resources in a HSI file 
 
-A project to classify landmarks/natural resources in a HSI file and train a deep convolutional neural network with the extracted features.
+A project to classify landmarks/natural resources in a HSI file by training a deep convolutional neural network with the extracted features.
 
 **Usage**
 
