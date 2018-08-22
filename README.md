@@ -1,16 +1,17 @@
-# Cancer detection using neural networks and Hyperspectral imaging
+# Hyperspectral Image classification - identification of resources in a HIS file 
 
-A project to detect cancer in the early stages of their development so as to reduce the number of deaths due to cancer.
+A project to classify landmarks/natural resources in a HIS file and train a deep convolutional neural network with the extracted features.
 
 **Usage**
 
 The code is written in python. So recommended following:
 1. Python3
 2. Certain libraries - Scikit, numpy, matplolib, PIL OR just download anaconda 4 :)
+3. Spectral python [Spy](http://www.spectralpython.net/installation.html)
+4. wxPython [Download](https://wxpython.org/)
 
 **Current implementation**
 
-Currently the code only generates the graphs for cancerous and non cancerous regions. Features from the graph need to be extracted to 
-train the neural network model
+Currently the code only visualizes the HIS files and generates the graphs for any pixel in an image 
 
 
