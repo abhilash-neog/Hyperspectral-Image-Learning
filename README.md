@@ -1,6 +1,6 @@
-# Hyperspectral Image classification - identification of resources in a HIS file 
+# Hyperspectral Image classification - identification of resources in a HSI file 
 
-A project to classify landmarks/natural resources in a HIS file and train a deep convolutional neural network with the extracted features.
+A project to classify landmarks/natural resources in a HSI file and train a deep convolutional neural network with the extracted features.
 
 **Usage**
 
@@ -12,6 +12,6 @@ The code is written in python. So recommended following:
 
 **Current implementation**
 
-Currently the code only visualizes the HIS files and generates the graphs for any pixel in an image 
+Currently the code only visualizes the HSI files and generates the graphs for any pixel in an image 
 
 

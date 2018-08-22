@@ -1,4 +1,4 @@
-# Image files description
+# Image files description - Indian Pines
 <br>
 
 **.lan** - the HIS chip of dimension - 145x145x220<br><br> 
