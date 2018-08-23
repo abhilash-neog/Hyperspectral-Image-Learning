@@ -1,5 +1,5 @@
 from spectral import *
-from keras.layers import Dense, Conv1D, Activation, MaxPooling1D
+from keras.layers import Dense, Conv1D, Activation, MaxPooling1D, Input
 from keras.models import Sequential, Model
 import scipy.io as sio
 import numpy as np
@@ -55,14 +55,21 @@ Y = gtd.flatten()#feature labels
 X_train, X_test, y_train, y_test = train_test_split(imgN,Y, test_size = 0.45)
 
 def get_model():
-    model = Sequential()
-    model.add(Conv1D(20,kernel_size = (25,), strides = (1,),input_shape = (220,1)))#, data_format = 'channels_last'))
-    model.add(Activation('tanh'))
-    model.add(MaxPooling1D(pool_size = (6,),strides = (1,)))
-    model.add(Dense(100))
-    model.add(Activation('tanh'))
-    model.add(Dense(16))
-    model.add(Activation('softmax'))
+    inputs = Input(shape=(220,))
+    #model = Sequential()
+    x = Conv1D(20,kernel_size = 25, strides = 1, activation = 'tanh')(inputs)
+    x = MaxPooling1D(pool_size = 6,strides = 1)(x)
+    x = Dense(100,activation = 'tanh')(x)
+    output = Dense(16, activation = 'softmax')(x)
+    model = Model(inputs=inputs, outputs=output)
+    #model.add(Conv1D(20,kernel_size = 25, strides = 1,input_shape = (11563,220,1)))
+    #Input size should be [batch, 1d, 2d, ch] = (None, 1, 15000, 1)
+    #model.add(Activation('tanh'))
+    #model.add(MaxPooling1D(pool_size = 6,strides = 1))
+    #model.add(Dense(100))
+    #model.add(Activation('tanh'))
+    #model.add(Dense(16))
+    #model.add(Activation('softmax'))
     return model
 
 model = get_model()
