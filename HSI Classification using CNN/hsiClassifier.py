@@ -1,5 +1,5 @@
 from spectral import *
-from keras.layers import Dense, Conv2D, Activation, MaxPooling2D
+from keras.layers import Dense, Conv1D, Activation, MaxPooling1D
 from keras.models import Sequential, Model
 import scipy.io as sio
 import numpy as np
@@ -56,9 +56,9 @@ X_train, X_test, y_train, y_test = train_test_split(imgN,Y, test_size = 0.45)
 
 def get_model():
     model = Sequential()
-    model.add(Conv2D(20,kernel_size = (25,1), strides = (1,1),input_shape = (220,1,1), data_format = 'channels_last'))
+    model.add(Conv1D(20,kernel_size = (25,), strides = (1,),input_shape = (220,1)))#, data_format = 'channels_last'))
     model.add(Activation('tanh'))
-    model.add(MaxPooling2D(pool_size = (6,1),strides = (1,1)))
+    model.add(MaxPooling1D(pool_size = (6,),strides = (1,)))
     model.add(Dense(100))
     model.add(Activation('tanh'))
     model.add(Dense(16))
