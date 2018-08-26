@@ -99,6 +99,6 @@ model.compile(optimizer = 'rmsprop', loss = 'categorical_crossentropy', metrics 
 X_train = np.array(X_train).reshape(len(X_train),len(X_train[0]),len(X_train[0][0]),1)
 X_test = np.array(X_test).reshape(len(X_test),len(X_test[0]),len(X_test[0][0]),1)
 model.fit(np.array(X_train),y_train,epochs = 10, batch_size = 32)
-model.evaluate(np.array(X_train),y_test, batch_size = 32)
+model.evaluate(np.array(X_test),y_test, batch_size = 32)
 
 
