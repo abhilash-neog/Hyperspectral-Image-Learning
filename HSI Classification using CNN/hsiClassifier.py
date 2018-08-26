@@ -92,7 +92,7 @@ def get_model():
     return model
 
 y_train = labelEncode(y_train)
-y_test = labelEncoder
+y_test = labelEncoder(y_test)
 model = get_model()
 model.compile(optimizer = 'rmsprop', loss = 'categorical_crossentropy', metrics = ['accuracy'])
 
