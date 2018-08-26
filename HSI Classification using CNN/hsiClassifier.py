@@ -73,6 +73,8 @@ def get_model():
     model = Sequential()
     #"""
     x = Conv2D(20,kernel_size = (25,1), activation = 'tanh')(inputs)
+    #Modification : added a new conv layer - acc- 56%
+    x = Conv2D(10,kernel_size = (3,1), activation = 'tanh')(x)
     x = MaxPooling2D(pool_size = (6,1))(x)
     x = Flatten()(x)
     x = Dense(100,activation = 'tanh')(x)
@@ -99,6 +101,6 @@ model.compile(optimizer = 'rmsprop', loss = 'categorical_crossentropy', metrics 
 X_train = np.array(X_train).reshape(len(X_train),len(X_train[0]),len(X_train[0][0]),1)
 X_test = np.array(X_test).reshape(len(X_test),len(X_test[0]),len(X_test[0][0]),1)
 model.fit(np.array(X_train),y_train,epochs = 10, batch_size = 32)
-model.evaluate(np.array(X_test),y_test, batch_size = 32)
+score = model.evaluate(np.array(X_test),y_test, batch_size = 32)
 
 
