@@ -92,12 +92,13 @@ def get_model():
     return model
 
 y_train = labelEncode(y_train)
-y_test = labelEncoder(y_test)
+y_test = labelEncode(y_test)
 model = get_model()
 model.compile(optimizer = 'rmsprop', loss = 'categorical_crossentropy', metrics = ['accuracy'])
 
 X_train = np.array(X_train).reshape(len(X_train),len(X_train[0]),len(X_train[0][0]),1)
+X_test = np.array(X_test).reshape(len(X_test),len(X_test[0]),len(X_test[0][0]),1)
 model.fit(np.array(X_train),y_train,epochs = 10, batch_size = 32)
-
+model.evaluate(np.array(X_train),y_test, batch_size = 32)
 
 
