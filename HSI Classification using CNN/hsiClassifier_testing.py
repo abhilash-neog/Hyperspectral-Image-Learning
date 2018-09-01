@@ -5,7 +5,7 @@ from keras.models import Sequential, Model
 import scipy.io as sio
 import numpy as np
 from keras import optimizers
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, KFold
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import LabelEncoder
 
@@ -59,7 +59,7 @@ for i in range(0,len(imgX)):
         
 Y = gtd.flatten()#feature labels
 Y = list(Y)
-X_train, X_test, y_train, y_test = train_test_split(imgN,Y, test_size = 0.60)
+X_train, X_test, y_train, y_test = train_test_split(imgN,Y, test_size = 0.20)
 #X_train = list(X_train)
 def labelEncode(labels):
     #one_hot_labels = keras.utils.to_categorical(labels, num_classes=10)
@@ -80,7 +80,8 @@ def get_model():
     
     x = Conv2D(10,kernel_size = (5,1), activation = 'sigmoid')(x)
     x = MaxPooling2D(pool_size = (2,1))(x)
-    x = BatchNormalization()(x)
+    #x = BatchNormalization()(x)
+    x = Dropout(0.02)(x)
     
     x = Conv2D(10,kernel_size = (3,1), activation = 'tanh')(x)
     x = MaxPooling2D(pool_size = (2,1))(x)
@@ -88,7 +89,7 @@ def get_model():
     x = Flatten()(x)
     
     x = Dense(100,activation = 'tanh')(x)
-    x = Dense(50, activation = 'tanh')(x)
+    x = Dense(50, activation = 'sigmoid')(x)
     output = Dense(17, activation = 'softmax')(x)
     model = Model(inputs=inputs, outputs=output)
     #"""
@@ -107,12 +108,21 @@ def get_model():
 y_train = labelEncode(y_train)
 y_test = labelEncode(y_test)
 model = get_model()
-#sgd = optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
-ada = optimizers.Adagrad(lr=0.001, decay=1e-6)
-model.compile(optimizer = ada, loss = 'categorical_crossentropy', metrics = ['accuracy'])
+#opt = optimizers.SGD(lr=0.2, decay=1e-6, momentum=0.9, nesterov=True)
+opt = optimizers.Adam(lr=0.001, decay=1e-6)
+model.compile(optimizer = opt, loss = 'categorical_crossentropy', metrics = ['accuracy'])
 
 X_train = np.array(X_train).reshape(len(X_train),len(X_train[0]),len(X_train[0][0]),1)
 X_test = np.array(X_test).reshape(len(X_test),len(X_test[0]),len(X_test[0][0]),1)
+
+kf = KFold(n_splits = len(X_train)/4, shuffle = True, random_state = 1)
+folds = list(kf.split(X_train,y_train))
+for j, (train_id, val_id) in enumerate(folds):  
+    print('\nFold ',j)
+    X_train_kf = X_train[train_id]
+    y_train_kf = y_train[train_id]
+    X_valid_kf = X_train[val_id]
+    y_valid_kf = y_train[val_id]
 
 model.fit(np.array(X_train),y_train,epochs = 20, batch_size = 16)
 score = model.evaluate(np.array(X_test),y_test, batch_size = 16)
