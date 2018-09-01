@@ -59,7 +59,7 @@ for i in range(0,len(imgX)):
         
 Y = gtd.flatten()#feature labels
 Y = list(Y)
-X_train, X_test, y_train, y_test = train_test_split(imgN,Y, test_size = 0.25)
+X_train, X_test, y_train, y_test = train_test_split(imgN,Y, test_size = 0.60)
 #X_train = list(X_train)
 def labelEncode(labels):
     #one_hot_labels = keras.utils.to_categorical(labels, num_classes=10)
@@ -74,15 +74,16 @@ def get_model():
     inputs = Input(shape=(220,1,1))
     #model = Sequential()
     #"""
-    x = Conv2D(20,kernel_size = (25,1), activation = 'tanh')(inputs)
-    x = MaxPooling2D(pool_size = (6,1))(x)
-    #x = Dropout(0.02)(x)
+    x = Conv2D(20,kernel_size = (5,1), activation = 'tanh')(inputs)
+    x = MaxPooling2D(pool_size = (3,1))(x)
+    x = Dropout(0.004)(x)
     #Modification : added a new conv layer - acc- 56%
-    x = Conv2D(10,kernel_size = (12,1), activation = 'tanh')(x)
-    x = MaxPooling2D(pool_size = (6,1))(x)
+    x = Conv2D(10,kernel_size = (5,1), activation = 'sigmoid')(x)
+    x = MaxPooling2D(pool_size = (2,1))(x)
     x = BatchNormalization()(x)
-    x = Conv2D(10,kernel_size = (12,1), activation = 'tanh')(x)
-    x = MaxPooling2D(pool_size = (6,1))(x)
+    
+    x = Conv2D(10,kernel_size = (3,1), activation = 'tanh')(x)
+    x = MaxPooling2D(pool_size = (2,1))(x)
     
     x = Flatten()(x)
     
@@ -107,13 +108,13 @@ y_train = labelEncode(y_train)
 y_test = labelEncode(y_test)
 model = get_model()
 #sgd = optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
-ada = optimizers.Adagrad(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
+ada = optimizers.Adagrad(lr=0.001, decay=1e-6)
 model.compile(optimizer = ada, loss = 'categorical_crossentropy', metrics = ['accuracy'])
 
 X_train = np.array(X_train).reshape(len(X_train),len(X_train[0]),len(X_train[0][0]),1)
 X_test = np.array(X_test).reshape(len(X_test),len(X_test[0]),len(X_test[0][0]),1)
 
-model.fit(np.array(X_train),y_train,epochs = 15, batch_size = 32)
+model.fit(np.array(X_train),y_train,epochs = 20, batch_size = 16)
 score = model.evaluate(np.array(X_test),y_test, batch_size = 16)
 print(score)
 
