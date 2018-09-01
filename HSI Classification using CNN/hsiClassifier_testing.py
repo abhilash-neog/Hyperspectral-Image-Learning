@@ -111,8 +111,8 @@ def get_model():
 y_train = labelEncode(y_train)
 #y_test = labelEncode(y_test)
 model = get_model()
-#opt = optimizers.SGD(lr=0.2, decay=1e-6, momentum=0.9, nesterov=True)
-opt = optimizers.Adam(lr=0.001, decay=1e-6)
+opt = optimizers.SGD(lr=0.2, decay=1e-6, momentum=0.9, nesterov=True)
+#opt = optimizers.Adam(lr=0.001, decay=1e-6)
 model.compile(optimizer = opt, loss = 'categorical_crossentropy', metrics = ['accuracy'])
 
 X_train = np.array(X_train).reshape(len(X_train),len(X_train[0]),len(X_train[0][0]),1)
@@ -130,7 +130,7 @@ for j, (train_id, val_id) in enumerate(folds):
     model.fit(np.array(X_train),y_train,epochs = 20, batch_size = 8)
     score = model.evaluate(np.array(X_valid_kf),y_valid_kf, batch_size = 8)
     print(score)
-
+    
 
 
 #test accuracy - 58.565% -> improvement
