@@ -77,7 +77,7 @@ def get_model():
     x = Conv2D(20,kernel_size = (5,1), activation = 'tanh')(inputs)
     x = MaxPooling2D(pool_size = (3,1))(x)
     x = Dropout(0.004)(x)
-    #Modification : added a new conv layer - acc- 56%
+    
     x = Conv2D(10,kernel_size = (5,1), activation = 'sigmoid')(x)
     x = MaxPooling2D(pool_size = (2,1))(x)
     x = BatchNormalization()(x)
@@ -117,5 +117,6 @@ X_test = np.array(X_test).reshape(len(X_test),len(X_test[0]),len(X_test[0][0]),1
 model.fit(np.array(X_train),y_train,epochs = 20, batch_size = 16)
 score = model.evaluate(np.array(X_test),y_test, batch_size = 16)
 print(score)
+#test accuracy - 58.565% -> improvement
 
 
