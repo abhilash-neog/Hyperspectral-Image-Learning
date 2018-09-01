@@ -1,5 +1,6 @@
 from spectral import *
 from keras.layers import Dense, Conv1D, Activation, MaxPooling1D, Input,Conv2D,MaxPooling2D, Flatten,Dropout
+from keras.layers import BatchNormalization
 from keras.models import Sequential, Model
 import scipy.io as sio
 import numpy as np
@@ -74,13 +75,19 @@ def get_model():
     #model = Sequential()
     #"""
     x = Conv2D(20,kernel_size = (25,1), activation = 'tanh')(inputs)
-    #x = MaxPooling2D(pool_size = (6,1))(x)
+    x = MaxPooling2D(pool_size = (6,1))(x)
     #x = Dropout(0.02)(x)
     #Modification : added a new conv layer - acc- 56%
-    x = Conv2D(10,kernel_size = (3,1), activation = 'tanh')(x)
+    x = Conv2D(10,kernel_size = (12,1), activation = 'tanh')(x)
     x = MaxPooling2D(pool_size = (6,1))(x)
+    x = BatchNormalization()(x)
+    x = Conv2D(10,kernel_size = (12,1), activation = 'tanh')(x)
+    x = MaxPooling2D(pool_size = (6,1))(x)
+    
     x = Flatten()(x)
+    
     x = Dense(100,activation = 'tanh')(x)
+    x = Dense(50, activation = 'tanh')(x)
     output = Dense(17, activation = 'softmax')(x)
     model = Model(inputs=inputs, outputs=output)
     #"""
@@ -99,13 +106,15 @@ def get_model():
 y_train = labelEncode(y_train)
 y_test = labelEncode(y_test)
 model = get_model()
-sgd = optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
-model.compile(optimizer = sgd, loss = 'categorical_crossentropy', metrics = ['accuracy'])
+#sgd = optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
+ada = optimizers.Adagrad(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
+model.compile(optimizer = ada, loss = 'categorical_crossentropy', metrics = ['accuracy'])
 
 X_train = np.array(X_train).reshape(len(X_train),len(X_train[0]),len(X_train[0][0]),1)
 X_test = np.array(X_test).reshape(len(X_test),len(X_test[0]),len(X_test[0][0]),1)
-model.fit(np.array(X_train),y_train,epochs = 30, batch_size = 32)
-score = model.evaluate(np.array(X_test),y_test, batch_size = 32)
+
+model.fit(np.array(X_train),y_train,epochs = 15, batch_size = 32)
+score = model.evaluate(np.array(X_test),y_test, batch_size = 16)
 print(score)
 
 
