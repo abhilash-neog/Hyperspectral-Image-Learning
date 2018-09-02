@@ -136,8 +136,8 @@ for j, (train_id, val_id) in enumerate(folds):
 #print average accuracy
 
 #train, X_test, ytrain, y_test = train_test_split(imgN,Y, test_size = 0.40)
-X_test = X_train[:len(X_train)/2]
-y_test = y_train[:len(y_train)/2]
+X_test = X_train[:int(len(X_train)/2)]
+y_test = y_train[:int(len(y_train)/2)]
 
 y_test = labelEncode(y_test)    
 X_test = np.array(X_test).reshape(len(X_test),len(X_test[0]),len(X_test[0][0]),1)
