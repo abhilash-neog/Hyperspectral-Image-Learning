@@ -111,17 +111,17 @@ def get_model():
 y_train = labelEncode(y_train)
 #y_test = labelEncode(y_test)
 model = get_model()
-opt = optimizers.SGD(lr=0.2, decay=1e-6, momentum=0.9, nesterov=True)
-#opt = optimizers.Adam(lr=0.001, decay=1e-6)
+#opt = optimizers.SGD(lr=0.2, decay=1e-6, momentum=0.9, nesterov=True)
+opt = optimizers.Adagrad(lr=0.001, decay=1e-6)
 model.compile(optimizer = opt, loss = 'categorical_crossentropy', metrics = ['accuracy'])
 
 X_train = np.array(X_train).reshape(len(X_train),len(X_train[0]),len(X_train[0][0]),1)
 #X_test = np.array(X_test).reshape(len(X_test),len(X_test[0]),len(X_test[0][0]),1)
-fl = int(len(X_train)/25)
+fl = 10#int(len(X_train)/25)
 kf = KFold(n_splits = fl, shuffle = True, random_state = 1)
 folds = list(kf.split(X_train,y_train))
 acc = []
-
+print("training the model on k-1 folds:\n")
 for j, (train_id, val_id) in enumerate(folds):  
     print('\nFold ',j)
     X_train_kf = X_train[train_id]
@@ -135,4 +135,8 @@ for j, (train_id, val_id) in enumerate(folds):
 
 #print average accuracy
 
-
+X_train, X_test, y_train, y_test = train_test_split(imgN,Y, test_size = 0.40)
+X_test = np.array(X_test).reshape(len(X_test),len(X_test[0]),len(X_test[0][0]),1)
+print("testing the trained model on 40% data\n:")
+scoreX = model.evaluate(np.array(X_test),y_test,batch_size = 8)
+print(scoreX)
