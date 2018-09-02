@@ -120,6 +120,7 @@ X_train = np.array(X_train).reshape(len(X_train),len(X_train[0]),len(X_train[0][
 fl = int(len(X_train)/25)
 kf = KFold(n_splits = fl, shuffle = True, random_state = 1)
 folds = list(kf.split(X_train,y_train))
+acc = []
 
 for j, (train_id, val_id) in enumerate(folds):  
     print('\nFold ',j)
@@ -128,11 +129,10 @@ for j, (train_id, val_id) in enumerate(folds):
     X_valid_kf = X_train[val_id]
     y_valid_kf = y_train[val_id]
     model.fit(np.array(X_train),y_train,epochs = 20, batch_size = 8)
-    score = model.evaluate(np.array(X_valid_kf),y_valid_kf, batch_size = 8)
-    print(score)
-    
+    loss, accuracy = model.evaluate(np.array(X_valid_kf),y_valid_kf, batch_size = 8)
+    acc.append(accuracy)
+    print(loss,accuracy)
 
-
-#test accuracy - 58.565% -> improvement
+#print average accuracy
 
 
