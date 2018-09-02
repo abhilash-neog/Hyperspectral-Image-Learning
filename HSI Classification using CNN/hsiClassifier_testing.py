@@ -144,3 +144,4 @@ X_test = np.array(X_test).reshape(len(X_test),len(X_test[0]),len(X_test[0][0]),1
 print("testing the trained model on 40% data\n:")
 scoreX = model.evaluate(np.array(X_test),y_test,batch_size = 8)
 print(scoreX)
+#increasing k helps in improving accuracy
