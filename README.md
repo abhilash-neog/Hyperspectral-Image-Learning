@@ -14,6 +14,6 @@ The code is written in python. So recommended following:
 
 1. The code for visualizing the HSI files that can generates the graphs for any pixel in an image and also the spectral signature of any class.
 
-2. The HSI classifier code models a network to learn the features of every class's pixels ,to be able to classify any given pixel accurately.
+2. The HSI classifier code models a network to learn the features of every class's pixels ,to be able to classify any given pixel accurately. Level of accuracy - 61%
 
 
