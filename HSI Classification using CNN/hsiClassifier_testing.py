@@ -9,7 +9,7 @@ from sklearn.model_selection import train_test_split, KFold
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import LabelEncoder
 
-img = open_image(r'C:\Users\user\Desktop\Abhilash\Imp\CEERI\NN\Hyperspectral Image Visualization\92AV3C.lan')
+img = open_image(r'C:\Users\admin\Hyperspectral-Image-Learning\Hyperspectral Image Visualization\92AV3C.lan')
 
 #img.shape
 #Out[2]: (145, 145, 220)
@@ -43,7 +43,7 @@ imgX = img.load()
 #Out[10]: (145, 145, 220)
 
 #the target features
-gt = sio.loadmat(r'C:\Users\user\Desktop\Abhilash\Imp\CEERI\NN\HSI Classification using CNN\data\Indian_pines_gt.mat')
+gt = sio.loadmat(r'C:\Users\admin\Hyperspectral-Image-Learning\HSI Classification using CNN\data\Indian_pines_gt.mat')
 gtd = gt['indian_pines_gt']#target
 
 #imgN = np.empty([21025,220,1])#feature vectors
@@ -111,17 +111,20 @@ def get_model():
 y_train = labelEncode(y_train)
 #y_test = labelEncode(y_test)
 model = get_model()
+
 #opt = optimizers.SGD(lr=0.2, decay=1e-6, momentum=0.9, nesterov=True)
-opt = optimizers.Adagrad(lr=0.001, decay=1e-6)
+#opt = optimizers.Adam(lr=0.001, decay=1e-6)
+opt = optimizers.Adagrad(lr=0.01, epsilon=None, decay=0.0)
+
 model.compile(optimizer = opt, loss = 'categorical_crossentropy', metrics = ['accuracy'])
 
 X_train = np.array(X_train).reshape(len(X_train),len(X_train[0]),len(X_train[0][0]),1)
 #X_test = np.array(X_test).reshape(len(X_test),len(X_test[0]),len(X_test[0][0]),1)
-fl = 10#int(len(X_train)/25)
+#fl = int(len(X_train)/225)
+fl = 10
 kf = KFold(n_splits = fl, shuffle = True, random_state = 1)
 folds = list(kf.split(X_train,y_train))
-acc = []
-print("training the model on k-1 folds:\n")
+
 for j, (train_id, val_id) in enumerate(folds):  
     print('\nFold ',j)
     X_train_kf = X_train[train_id]
@@ -129,19 +132,9 @@ for j, (train_id, val_id) in enumerate(folds):
     X_valid_kf = X_train[val_id]
     y_valid_kf = y_train[val_id]
     model.fit(np.array(X_train),y_train,epochs = 20, batch_size = 8)
-    loss, accuracy = model.evaluate(np.array(X_valid_kf),y_valid_kf, batch_size = 8)
-    acc.append(accuracy)
-    print(loss,accuracy)
+    score = model.evaluate(np.array(X_valid_kf),y_valid_kf, batch_size = 8)
+    print(score)
+    
 
-#print average accuracy
 
-#train, X_test, ytrain, y_test = train_test_split(imgN,Y, test_size = 0.40)
-X_test = X_train[:int(len(X_train)/2)]
-y_test = y_train[:int(len(y_train)/2)]
-
-y_test = labelEncode(y_test)    
-X_test = np.array(X_test).reshape(len(X_test),len(X_test[0]),len(X_test[0][0]),1)
-print("testing the trained model on 40% data\n:")
-scoreX = model.evaluate(np.array(X_test),y_test,batch_size = 8)
-print(scoreX)
-#increasing k helps in improving accuracy
+#test accuracy - 61% -> improvement - TRUE
