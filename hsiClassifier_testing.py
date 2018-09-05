@@ -137,4 +137,4 @@ for j, (train_id, val_id) in enumerate(folds):
     
 
 
-#test accuracy - 58.565% -> improvement
+#test accuracy - 61% -> improvement - TRUE
