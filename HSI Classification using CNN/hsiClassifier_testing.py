@@ -77,11 +77,11 @@ def get_model():
     inputs = Input(shape=(220,1,1))
     #model = Sequential()
     #"""
-    x = Conv2D(20,kernel_size = (5,1), activation = 'tanh')(inputs)
+    x = Conv2D(20,kernel_size = (6,1), activation = 'tanh')(inputs)
     x = MaxPooling2D(pool_size = (3,1))(x)
     x = Dropout(0.004)(x)
     
-    x = Conv2D(10,kernel_size = (5,1), activation = 'sigmoid')(x)
+    x = Conv2D(10,kernel_size = (6,1), activation = 'tanh')(x)
     x = MaxPooling2D(pool_size = (2,1))(x)
     #x = BatchNormalization()(x)
     x = Dropout(0.02)(x)
@@ -89,10 +89,15 @@ def get_model():
     x = Conv2D(10,kernel_size = (3,1), activation = 'tanh')(x)
     x = MaxPooling2D(pool_size = (2,1))(x)
     
+    x = x = Conv2D(10,kernel_size = (3,1), activation = 'tanh')(x)
+    x = MaxPooling2D(pool_size = (2,1))(x)
+    x = Dropout(0.02)(x)
+    
     x = Flatten()(x)
     
     x = Dense(100,activation = 'tanh')(x)
-    x = Dense(50, activation = 'sigmoid')(x)
+    x = Dense(50, activation = 'tanh')(x)
+    x = Dense(24,activation = 'tanh')(x)
     output = Dense(17, activation = 'softmax')(x)
     model = Model(inputs=inputs, outputs=output)
     #"""
@@ -114,14 +119,14 @@ model = get_model()
 
 #opt = optimizers.SGD(lr=0.2, decay=1e-6, momentum=0.9, nesterov=True)
 #opt = optimizers.Adam(lr=0.001, decay=1e-6)
-opt = optimizers.Adagrad(lr=0.005, epsilon=None, decay=0.0)
+opt = optimizers.Adagrad(lr=0.05, epsilon=None, decay=1e-4)
 
 model.compile(optimizer = opt, loss = 'categorical_crossentropy', metrics = ['accuracy'])
 
 X_train = np.array(X_train).reshape(len(X_train),len(X_train[0]),len(X_train[0][0]),1)
 #X_test = np.array(X_test).reshape(len(X_test),len(X_test[0]),len(X_test[0][0]),1)
 #fl = int(len(X_train)/225)
-fl = 20
+fl = 5
 kf = KFold(n_splits = fl, shuffle = True, random_state = 1)
 folds = list(kf.split(X_train,y_train))
 
@@ -131,8 +136,8 @@ for j, (train_id, val_id) in enumerate(folds):
     y_train_kf = y_train[train_id]
     X_valid_kf = X_train[val_id]
     y_valid_kf = y_train[val_id]
-    model.fit(np.array(X_train),y_train,epochs = 20, batch_size = 32)
-    score = model.evaluate(np.array(X_valid_kf),y_valid_kf, batch_size = 32)
+    model.fit(np.array(X_train),y_train,epochs = 20, batch_size = 8)
+    score = model.evaluate(np.array(X_valid_kf),y_valid_kf, batch_size = 8)
     print(score)
     
 
