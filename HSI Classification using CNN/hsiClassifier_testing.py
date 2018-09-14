@@ -4,24 +4,28 @@ from keras.layers import BatchNormalization
 from keras.models import Sequential, Model
 import scipy.io as sio
 import numpy as np
+import os
 from keras import optimizers
 from sklearn.model_selection import train_test_split, KFold
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import LabelEncoder
 
-img = open_image(r'C:\Users\user\Desktop\Abhilash\Imp\CEERI\NN\HSI Classification using CNN\data\92AV3C.lan')
+script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
+rel_path = "data/92AV3C.lan"
+abs_file_path = os.path.join(script_dir, rel_path)
 
+img = open_image(abs_file_path)
 imgX = img.load()
-#print(imgX)
 
-#imgX.shape
-#Out[10]: (145, 145, 220)
+#calculation of f-norm
+#imgX.shape->145,145,220 - I1 -145,I2-145,I3-220
+
+
 
 #the target features
 gt = sio.loadmat(r'C:\Users\user\Desktop\Abhilash\Imp\CEERI\NN\HSI Classification using CNN\data\Indian_pines_gt.mat')
 gtd = gt['indian_pines_gt']#target
-
-#imgN = np.empty([21025,220,1])#feature vectors
+Y = gtd.flatten()
 k = 0
 imgN = []
 #print(imgN.shape)
@@ -32,7 +36,7 @@ for i in range(0,len(imgX)):
         #imgN[k] = imgX[i,j,:].reshape(220,1,1)#(1,220)
         k+=1
         
-Y = gtd.flatten()#feature labels
+#Y = gtd.flatten()#feature labels
 Y = list(Y)
 #X_train, X_test, y_train, y_test = train_test_split(imgN,Y, test_size = 0.20)
 #X_train = list(X_train)
@@ -49,9 +53,9 @@ def labelEncode(labels):
     return onehot_encoded
 
 def get_model():
-    inputs = Input(shape=(220,1,1))
+    #inputs = Input(shape=(220,1,1))
     #model = Sequential()
-    #"""
+    """
     x = Conv2D(20,kernel_size = (6,1), activation = 'tanh')(inputs)
     x = MaxPooling2D(pool_size = (3,1))(x)
     x = Dropout(0.004)(x)
@@ -75,7 +79,16 @@ def get_model():
     x = Dense(24,activation = 'tanh')(x)
     output = Dense(17, activation = 'softmax')(x)
     model = Model(inputs=inputs, outputs=output)
-    #"""
+    """
+    model = Sequential()
+    model.add(Dense(100,input_shape=(220,1,1)))
+    model.add(Activation('sigmoid'))
+    model.add(Dense(50))
+    model.add(Activation('tanh'))
+    model.add(Dense(24))
+    model.add(Activation('sigmoid'))
+    model.add(Dense(17))
+    model.add(Activation('softmax'))
     """
     model.add(Conv1D(20,kernel_size = 25, input_dim = 220))
     #Input size should be [batch, 1d, 2d, ch] = (None, 1, 15000, 1)
