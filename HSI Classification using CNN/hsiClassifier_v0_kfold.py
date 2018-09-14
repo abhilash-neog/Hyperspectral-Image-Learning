@@ -11,11 +11,13 @@ from sklearn.preprocessing import LabelEncoder
 import os
 
 
-img = open_image(r'C:\Users\user\Desktop\Abhilash\Imp\CEERI\NN\HSI Classification using CNN\data\92AV3C.lan')
+#img = open_image(r'C:\Users\user\Desktop\Abhilash\Imp\CEERI\NN\HSI Classification using CNN\data\92AV3C.lan')
 
 script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
 rel_path = "data/92AV3C.lan"
 abs_file_path = os.path.join(script_dir, rel_path)
+
+img = open_image(abs_file_path)
 #img.shape
 #Out[2]: (145, 145, 220)
 
