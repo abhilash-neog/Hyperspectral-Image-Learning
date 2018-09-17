@@ -117,7 +117,7 @@ X_train, X_test, y_train, y_test = train_test_split(imgN,Y, test_size = 0.60)
 y_train = labelEncode(y_train)
 y_test = labelEncode(y_test)
 
-model.fit(X_train,y_train,epochs = 20, batch_size = 16)
+model.fit(np.array(X_train),np.array(y_train),epochs = 20, batch_size = 16)
 score = model.evaluate(X_test,y_test, batch_size = 16)
 """
 for j, (train_id, val_id) in enumerate(folds):  
