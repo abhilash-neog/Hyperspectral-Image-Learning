@@ -28,13 +28,20 @@ gtd = gt['indian_pines_gt']#target
 fnorms = []
 for i in range(0,imgX.shape[2]):
     fnorms.append(LA.norm(imgX[:,:,i]))
-    
-        
-Y = gtd.flatten()#feature labels
-Y = list(Y)
 
-X_train = list(imgN)
-y_train = Y
+#len(fnorms)
+ind = np.argsort(fnorms)
+#ind- 220
+index = ind[:150]
+
+a = imgX[:,:,index[0]]
+
+for i in index[1:]:
+    b = imgX[:,:,i]
+    a = np.dstack((a,b))
+
+#a is the new HSI
+
 
 def labelEncode(labels):
     #one_hot_labels = keras.utils.to_categorical(labels, num_classes=10)
