@@ -41,6 +41,8 @@ for i in index[1:]:
     a = np.dstack((a,b))
 
 #a is the new HSI
+X_train = a
+y_train = gtd
 
 
 def labelEncode(labels):
