@@ -10,6 +10,8 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import LabelEncoder
 import os
 from numpy import linalg as LA
+from sklearn.decomposition import PCA
+
 
 script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
 rel_path = "data/92AV3C.lan"
@@ -39,6 +41,8 @@ a = imgX[:,:,index[0]]
 for i in index[1:]:
     b = imgX[:,:,i]
     a = np.dstack((a,b))
+
+#dimensionality reduction
 
 #a is the new HSI
 X_train = a
