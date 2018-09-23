@@ -45,10 +45,10 @@ for i in index[1:]:
 #dimensionality reduction
 
 #a is the new HSI
-X_train = a
-y_train = gtd
+#X_train = a
+#y_train = gtd
 
-
+"""
 def labelEncode(labels):
     #one_hot_labels = keras.utils.to_categorical(labels, num_classes=10)
     lab_encoder = LabelEncoder()
@@ -61,7 +61,7 @@ def labelEncode(labels):
 def get_model():
     inputs = Input(shape=(220,1,1))
     #model = Sequential()
-    #"""
+    
     x = Conv2D(20,kernel_size = (6,1), activation = 'tanh')(inputs)
     x = MaxPooling2D(pool_size = (3,1))(x)
     x = Dropout(0.004)(x)
@@ -85,8 +85,6 @@ def get_model():
     x = Dense(24,activation = 'tanh')(x)
     output = Dense(17, activation = 'softmax')(x)
     model = Model(inputs=inputs, outputs=output)
-    #"""
-    """
     model.add(Conv1D(20,kernel_size = 25, input_dim = 220))
     #Input size should be [batch, 1d, 2d, ch] = (None, 1, 15000, 1)
     model.add(Activation('tanh'))
@@ -95,7 +93,7 @@ def get_model():
     model.add(Activation('tanh'))
     model.add(Dense(16))
     model.add(Activation('softmax'))
-    """
+    
     return model
 
 y_train = labelEncode(y_train)
@@ -125,6 +123,6 @@ for j, (train_id, val_id) in enumerate(folds):
     score = model.evaluate(np.array(X_valid_kf),y_valid_kf, batch_size = 8)
     print(score)
     
-
+"""
 
 #test accuracy - 61% -> improvement - TRUE
