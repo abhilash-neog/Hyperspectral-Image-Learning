@@ -45,6 +45,9 @@ for i in index[1:]:
 #dimensionality reduction
 
 x = a.flatten()
+
+x = x.reshape(1,3153750)
+
 z =  145*145*100
 pc = PCA(n_components=z,svd_solver='randomized',whiten=True).fit(x)
 print(sum(pc.explained_variance_ratio_))
