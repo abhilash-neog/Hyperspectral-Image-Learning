@@ -44,6 +44,11 @@ for i in index[1:]:
 
 #dimensionality reduction
 
+x = a.flatten()
+z =  145*145*100
+pc = PCA(n_components=z,svd_solver='randomized',whiten=True).fit(x)
+print(sum(pc.explained_variance_ratio_))
+
 #a is the new HSI
 #X_train = a
 #y_train = gtd
