@@ -46,7 +46,7 @@ for i in index[1:]:
 
 x = a.flatten()
 
-x = x.reshape(1,3153750)
+x = x.reshape(1,a.shape[0]*a.shape[1]*a.shape[2])
 
 z =  145*145*100
 pc = PCA(n_components=z,svd_solver='randomized',whiten=True).fit(x)
