@@ -1,0 +1,25 @@
+When to use PCA?
+
+you don’t need to reduce the dimensions, if you are just predicting or classifying.
+However, if you are taking decision on the basis of relationships between variables, 
+you should do a PCA.
+
+The only scenario when you can leave PCA out is when you don’t see multi-collinearity / correlations 
+in your variables.
+
+However, if you do see a strong or even moderate correlation between variables, 
+PCA is highly suggested
+usual purpose of PCA is dimensionality reduction, i.e. describing relationships in your data using 
+fewer dimensions than are actually present.
+A component that explains a lot of variance could be a good feature but not necessarily, its not
+ exactly geared towards that purpose.
+
+What is the difference between principal component analysis (PCA) and feature selection in machine 
+learning?
+
+Both methods reduce dimensionality (# of predictors).
+
+PCA combines similar (correlated) attributes and creates new ones. Superior to original attributes.
+
+Feature selection doesn’t combine attributes. Just evaluates their quality, predictive power and 
+select the best set.

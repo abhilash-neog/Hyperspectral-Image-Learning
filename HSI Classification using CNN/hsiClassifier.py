@@ -1,5 +1,6 @@
 from spectral import *
 from keras.layers import Dense, Conv1D, Activation, MaxPooling1D, Input,Conv2D,MaxPooling2D, Flatten,Dropout
+from keras.layers import BatchNormalization
 from keras.models import Sequential, Model
 import scipy.io as sio
 import numpy as np
@@ -7,9 +8,18 @@ from keras import optimizers
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import LabelEncoder
+import os
+
 
 img = open_image(r'C:\Users\admin\Hyperspectral-Image-Learning\Hyperspectral Image Visualization\92AV3C.lan')
 
+#img = open_image(r'C:\Users\user\Desktop\Abhilash\Imp\CEERI\NN\Hyperspectral Image Visualization\92AV3C.lan')
+script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
+rel_path = "data/92AV3C.lan"
+abs_file_path = os.path.join(script_dir, rel_path)
+
+
+img = open_image(abs_file_path)
 #img.shape
 #Out[2]: (145, 145, 220)
 
@@ -58,7 +68,7 @@ for i in range(0,len(imgX)):
         
 Y = gtd.flatten()#feature labels
 Y = list(Y)
-X_train, X_test, y_train, y_test = train_test_split(imgN,Y, test_size = 0.25)
+X_train, X_test, y_train, y_test = train_test_split(imgN,Y, test_size = 0.60)
 #X_train = list(X_train)
 def labelEncode(labels):
     #one_hot_labels = keras.utils.to_categorical(labels, num_classes=10)
@@ -73,14 +83,21 @@ def get_model():
     inputs = Input(shape=(220,1,1))
     #model = Sequential()
     #"""
-    x = Conv2D(20,kernel_size = (25,1), activation = 'tanh')(inputs)
-    #x = MaxPooling2D(pool_size = (6,1))(x)
-    #x = Dropout(0.02)(x)
-    #Modification : added a new conv layer - acc- 56%
+    x = Conv2D(20,kernel_size = (5,1), activation = 'tanh')(inputs)
+    x = MaxPooling2D(pool_size = (3,1))(x)
+    x = Dropout(0.004)(x)
+    
+    x = Conv2D(10,kernel_size = (5,1), activation = 'sigmoid')(x)
+    x = MaxPooling2D(pool_size = (2,1))(x)
+    x = BatchNormalization()(x)
+    
     x = Conv2D(10,kernel_size = (3,1), activation = 'tanh')(x)
-    x = MaxPooling2D(pool_size = (6,1))(x)
+    x = MaxPooling2D(pool_size = (2,1))(x)
+    
     x = Flatten()(x)
+    
     x = Dense(100,activation = 'tanh')(x)
+    x = Dense(50, activation = 'tanh')(x)
     output = Dense(17, activation = 'softmax')(x)
     model = Model(inputs=inputs, outputs=output)
     #"""
@@ -99,6 +116,7 @@ def get_model():
 y_train = labelEncode(y_train)
 y_test = labelEncode(y_test)
 model = get_model()
+
 sgd = optimizers.SGD(lr=0.5, decay=1e-6, momentum=0.9, nesterov=True)
 model.compile(optimizer = sgd, loss = 'categorical_crossentropy', metrics = ['accuracy'])
 
@@ -106,6 +124,18 @@ X_train = np.array(X_train).reshape(len(X_train),len(X_train[0]),len(X_train[0][
 X_test = np.array(X_test).reshape(len(X_test),len(X_test[0]),len(X_test[0][0]),1)
 model.fit(np.array(X_train),y_train,epochs = 20, batch_size = 32)
 score = model.evaluate(np.array(X_test),y_test, batch_size = 32)
+
+#sgd = optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
+ada = optimizers.Adagrad(lr=0.001, decay=1e-6)
+model.compile(optimizer = ada, loss = 'categorical_crossentropy', metrics = ['accuracy'])
+
+X_train = np.array(X_train).reshape(len(X_train),len(X_train[0]),len(X_train[0][0]),1)
+X_test = np.array(X_test).reshape(len(X_test),len(X_test[0]),len(X_test[0][0]),1)
+
+model.fit(np.array(X_train),y_train,epochs = 20, batch_size = 16)
+score = model.evaluate(np.array(X_test),y_test, batch_size = 16)
+
 print(score)
+#test accuracy - 58.565% -> improvement
 
 
