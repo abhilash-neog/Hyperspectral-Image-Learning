@@ -10,10 +10,14 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import LabelEncoder
 import os
 
+
+img = open_image(r'C:\Users\admin\Hyperspectral-Image-Learning\HSI Classification using CNN\data\92AV3C.lan')
+
 #img = open_image(r'C:\Users\user\Desktop\Abhilash\Imp\CEERI\NN\Hyperspectral Image Visualization\92AV3C.lan')
 script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
 rel_path = "data/92AV3C.lan"
 abs_file_path = os.path.join(script_dir, rel_path)
+
 
 img = open_image(abs_file_path)
 #img.shape
@@ -48,7 +52,7 @@ imgX = img.load()
 #Out[10]: (145, 145, 220)
 
 #the target features
-gt = sio.loadmat(r'C:\Users\user\Desktop\Abhilash\Imp\CEERI\NN\HSI Classification using CNN\data\Indian_pines_gt.mat')
+gt = sio.loadmat(r'C:\Users\admin\Hyperspectral-Image-Learning\HSI Classification using CNN\data\Indian_pines_gt.mat')
 gtd = gt['indian_pines_gt']#target
 
 #imgN = np.empty([21025,220,1])#feature vectors
@@ -112,6 +116,15 @@ def get_model():
 y_train = labelEncode(y_train)
 y_test = labelEncode(y_test)
 model = get_model()
+
+sgd = optimizers.SGD(lr=0.5, decay=1e-6, momentum=0.9, nesterov=True)
+model.compile(optimizer = sgd, loss = 'categorical_crossentropy', metrics = ['accuracy'])
+
+X_train = np.array(X_train).reshape(len(X_train),len(X_train[0]),len(X_train[0][0]),1)
+X_test = np.array(X_test).reshape(len(X_test),len(X_test[0]),len(X_test[0][0]),1)
+model.fit(np.array(X_train),y_train,epochs = 20, batch_size = 32)
+score = model.evaluate(np.array(X_test),y_test, batch_size = 32)
+
 #sgd = optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
 ada = optimizers.Adagrad(lr=0.001, decay=1e-6)
 model.compile(optimizer = ada, loss = 'categorical_crossentropy', metrics = ['accuracy'])
@@ -121,6 +134,7 @@ X_test = np.array(X_test).reshape(len(X_test),len(X_test[0]),len(X_test[0][0]),1
 
 model.fit(np.array(X_train),y_train,epochs = 20, batch_size = 16)
 score = model.evaluate(np.array(X_test),y_test, batch_size = 16)
+
 print(score)
 #test accuracy - 58.565% -> improvement
 
