@@ -10,17 +10,16 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
-
 import os
 
 
-
-#img = open_image(r'C:\Users\user\Desktop\Abhilash\Imp\CEERI\NN\Hyperspectral Image Visualization\92AV3C.lan')
 script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
 rel_path = "data/92AV3C.lan"
+rel_path2 = "data/Indian_pines_corrected.mat"
 abs_file_path = os.path.join(script_dir, rel_path)
-
+abs_file_path2 = os.path.join(script_dir,rel_path2)
 img = open_image(abs_file_path)
+
 
 #img.shape
 #Out[2]: (145, 145, 220)
@@ -50,7 +49,7 @@ img = open_image(abs_file_path)
 imgX = img.load()
 
 #the target features
-gt = sio.loadmat(r'C:\Users\admin\Hyperspectral-Image-Learning\HSI Classification using CNN\data\Indian_pines_gt.mat')
+gt = sio.loadmat(abs_file_path2)
 gtd = gt['indian_pines_gt']#target
 
 Y = gtd.flatten()
