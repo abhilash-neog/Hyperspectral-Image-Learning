@@ -12,9 +12,11 @@ from sklearn.model_selection import train_test_split, KFold
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import LabelEncoder
 
+script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
+rel_path = "data/92AV3C.lan"
+abs_file_path = os.path.join(script_dir, rel_path)
 
-img = open_image(r'C:\Users\admin\Hyperspectral-Image-Learning\Hyperspectral Image Visualization\92AV3C.lan')
-
+img = open_image(abs_file_path)
 #img.shape
 #Out[2]: (145, 145, 220)
 
