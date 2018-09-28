@@ -15,7 +15,7 @@ import os
 
 script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
 rel_path = "data/92AV3C.lan"
-rel_path2 = "data/Indian_pines_corrected.mat"
+rel_path2 = "data/Indian_pines_gt.mat"
 abs_file_path = os.path.join(script_dir, rel_path)
 abs_file_path2 = os.path.join(script_dir,rel_path2)
 img = open_image(abs_file_path)
