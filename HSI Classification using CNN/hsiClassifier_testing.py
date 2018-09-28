@@ -14,8 +14,9 @@ from sklearn.preprocessing import LabelEncoder
 
 script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
 rel_path = "data/92AV3C.lan"
+rel_path2 = "data/Indian_pines_corrected.mat"
 abs_file_path = os.path.join(script_dir, rel_path)
-
+abs_file_path2 = os.path.join(script_dir,rel_path2)
 img = open_image(abs_file_path)
 #img.shape
 #Out[2]: (145, 145, 220)
@@ -49,22 +50,11 @@ imgX = img.load()
 #Out[10]: (145, 145, 220)
 
 #the target features
-gt = sio.loadmat(r'C:\Users\admin\Hyperspectral-Image-Learning\HSI Classification using CNN\data\Indian_pines_gt.mat')
+gt = sio.loadmat(abs_file_path2)
 gtd = gt['indian_pines_gt']#target
 
 #imgN = np.empty([21025,220,1])#feature vectors
-
-script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
-rel_path = "data/92AV3C.lan"
-abs_file_path = os.path.join(script_dir, rel_path)
-
-img = open_image(abs_file_path)
-imgX = img.load()
-
 #the target features
-gt = sio.loadmat(r'C:\Users\user\Desktop\Abhilash\Imp\CEERI\NN\HSI Classification using CNN\data\Indian_pines_gt.mat')
-gtd = gt['indian_pines_gt']#target
-Y = gtd.flatten()
 
 k = 0
 imgN = []
