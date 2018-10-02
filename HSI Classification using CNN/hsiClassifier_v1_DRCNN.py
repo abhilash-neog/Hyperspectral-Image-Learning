@@ -8,6 +8,7 @@ from keras import optimizers
 from sklearn.model_selection import train_test_split, KFold
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import StandardScaler
 import os
 from numpy import linalg as LA
 from sklearn.decomposition import PCA
@@ -23,8 +24,9 @@ imgX = img.load()
 
 gt = sio.loadmat(r'C:\Users\user\Desktop\Abhilash\Imp\CEERI\NN\HSI Classification using CNN\data\Indian_pines_gt.mat')
 gtd = gt['indian_pines_gt']#target
-
-
+Y = gtd.flatten()
+Y = list(Y)
+#imgX = imgX.reshape(145*145,220,1,1)
 #calculation of f-norm
 #imgX.shape->145,145,220 - I1 -145,I2-145,I3-220
 fnorms = []
@@ -44,19 +46,29 @@ for i in index[1:]:
 
 #dimensionality reduction
 
-x = a.flatten()
+#x = a.flatten()
 
-x = x.reshape(1,a.shape[0]*a.shape[1]*a.shape[2])
+#x = x.reshape(1,a.shape[0]*a.shape[1]*a.shape[2])
 
-z =  145*145*100
-pc = PCA(n_components=z,svd_solver='randomized',whiten=True).fit(x)
-print(sum(pc.explained_variance_ratio_))
+#z =  145*145*100
+#pc = PCA(n_components=z,svd_solver='randomized',whiten=True).fit(x)
+#print(sum(pc.explained_variance_ratio_))
+
+a = a.reshape(145*145,150)
+
+a = StandardScaler().fit_transform(a)
+
+pca = PCA(n_components = 100, svd_solver='randomized',whiten=True)
+
+principal_components = pca.fit_transform(a)
+
+principal_components = principal_components.reshape(145*145,100,1,1)
 
 #a is the new HSI
 #X_train = a
 #y_train = gtd
+X_train, X_test, y_train, y_test = train_test_split(principal_components,Y, test_size = 0.60)
 
-"""
 def labelEncode(labels):
     #one_hot_labels = keras.utils.to_categorical(labels, num_classes=10)
     lab_encoder = LabelEncoder()
@@ -67,7 +79,7 @@ def labelEncode(labels):
     return onehot_encoded
 
 def get_model():
-    inputs = Input(shape=(220,1,1))
+    inputs = Input(shape=(100,1,1))
     #model = Sequential()
     
     x = Conv2D(20,kernel_size = (6,1), activation = 'tanh')(inputs)
@@ -93,6 +105,7 @@ def get_model():
     x = Dense(24,activation = 'tanh')(x)
     output = Dense(17, activation = 'softmax')(x)
     model = Model(inputs=inputs, outputs=output)
+    """
     model.add(Conv1D(20,kernel_size = 25, input_dim = 220))
     #Input size should be [batch, 1d, 2d, ch] = (None, 1, 15000, 1)
     model.add(Activation('tanh'))
@@ -101,10 +114,12 @@ def get_model():
     model.add(Activation('tanh'))
     model.add(Dense(16))
     model.add(Activation('softmax'))
-    
+    """
     return model
 
 y_train = labelEncode(y_train)
+y_test = labelEncode(y_test)
+model = get_model()
 #y_test = labelEncode(y_test)
 model = get_model()
 
@@ -114,7 +129,7 @@ opt = optimizers.Adagrad(lr=0.05, epsilon=None, decay=1e-4)
 
 model.compile(optimizer = opt, loss = 'categorical_crossentropy', metrics = ['accuracy'])
 
-X_train = np.array(X_train).reshape(len(X_train),len(X_train[0]),len(X_train[0][0]),1)
+X_train = np.array(X_train).reshape(X_train.shape[0],X_train.shape[1],X_train.shape[2],1)
 #X_test = np.array(X_test).reshape(len(X_test),len(X_test[0]),len(X_test[0][0]),1)
 #fl = int(len(X_train)/225)
 fl = 5
@@ -131,6 +146,6 @@ for j, (train_id, val_id) in enumerate(folds):
     score = model.evaluate(np.array(X_valid_kf),y_valid_kf, batch_size = 8)
     print(score)
     
-"""
+
 
 #test accuracy - 61% -> improvement - TRUE
