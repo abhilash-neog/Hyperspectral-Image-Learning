@@ -14,6 +14,7 @@ fewer dimensions than are actually present.
 A component that explains a lot of variance could be a good feature but not necessarily, its not
  exactly geared towards that purpose.
 
+
 What is the difference between principal component analysis (PCA) and feature selection in machine 
 learning?
 
@@ -23,3 +24,32 @@ PCA combines similar (correlated) attributes and creates new ones. Superior to o
 
 Feature selection doesn’t combine attributes. Just evaluates their quality, predictive power and 
 select the best set.
+
+Dimensionality reduction is typically choosing a basis or mathematical representation within 
+which you can describe most but not all of the variance within your data, thereby retaining the 
+relevant information, while reducing the amount of information necessary to represent it. There 
+are a variety of techniques for doing this including but not limited to PCA, ICA, and 
+Matrix Feature Factorization. These will take existing data and reduce it to the most 
+discriminative components.These all allow you to represent most of the information in 
+your dataset with fewer, more discriminative features.
+
+Feature Selection is hand selecting features which are highly discriminative. 
+This has a lot more to do with feature engineering than analysis, and requires 
+significantly more work on the part of the data scientist. It requires an understanding of 
+what aspects of your dataset are important in whatever predictions you're making, and 
+which aren't. Feature extraction usually involves generating new features which are 
+composites of existing features. Both of these techniques fall into the category of 
+feature engineering. Generally feature engineering is important if you want to obtain the 
+best results, as it involves creating information that may not exist in your dataset, and 
+increasing your signal to noise ratio.
+
+
+Simply put:
+
+feature selection: you select a subset of the original feature set; while
+feature extraction: you build a new set of features from the original feature set.
+Examples of feature extraction: extraction of contours in images, extraction of digrams from a text, 
+extraction of phonemes from recording of spoken text, etc.
+
+Feature extraction involves a transformation of the features, which often is not reversible 
+because some information is lost in the process of dimensionality reduction.
