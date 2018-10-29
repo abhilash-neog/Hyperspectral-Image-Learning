@@ -10,19 +10,16 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
-
 import os
 
 
-img = open_image(r'C:\Users\admin\Hyperspectral-Image-Learning\HSI Classification using CNN\data\92AV3C.lan')
-
-#img = open_image(r'C:\Users\user\Desktop\Abhilash\Imp\CEERI\NN\Hyperspectral Image Visualization\92AV3C.lan')
 script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
 rel_path = "data/92AV3C.lan"
+rel_path2 = "data/Indian_pines_gt.mat"
 abs_file_path = os.path.join(script_dir, rel_path)
-
-
+abs_file_path2 = os.path.join(script_dir,rel_path2)
 img = open_image(abs_file_path)
+
 
 #img.shape
 #Out[2]: (145, 145, 220)
@@ -52,23 +49,25 @@ img = open_image(abs_file_path)
 imgX = img.load()
 
 #the target features
-gt = sio.loadmat(r'C:\Users\admin\Hyperspectral-Image-Learning\HSI Classification using CNN\data\Indian_pines_gt.mat')
+gt = sio.loadmat(abs_file_path2)
 gtd = gt['indian_pines_gt']#target
 
 Y = gtd.flatten()
 Y = list(Y)
-
+imgX = imgX.reshape(145*145,220,1,1)
+"""
 imgX = imgX.reshape(145*145,220)
 
 imgX = StandardScaler().fit_transform(imgX)
 
-pca = PCA(n_components=50)
+pca = PCA(n_components = 200)
 
 principal_components = pca.fit_transform(imgX)
 
-principal_components = principal_components.reshape(145*145,50,1,1)
+principal_components = principal_components.reshape(145*145,200,1,1)
+"""
 
-X_train, X_test, y_train, y_test = train_test_split(principal_components,Y, test_size = 0.60)
+X_train, X_test, y_train, y_test = train_test_split(imgX,Y, test_size = 0.60)
 
 def labelEncode(labels):
     #one_hot_labels = keras.utils.to_categorical(labels, num_classes=10)
@@ -80,7 +79,7 @@ def labelEncode(labels):
     return onehot_encoded
 
 def get_model():
-    inputs = Input(shape=(50,1,1))
+    inputs = Input(shape=(220,1,1))
     model = Sequential()
     #"""
     x = Conv2D(20,kernel_size = (5,1), activation = 'tanh')(inputs)
