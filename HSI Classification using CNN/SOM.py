@@ -88,13 +88,13 @@ class SOM(object):
             slice_input = tf.pad(tf.reshape(bmu_index, [1]),
                                  np.array([[0, 1]]))
             bmu_loc = tf.reshape(tf.slice(self._location_vects, slice_input,
-                                          tf.constant(np.array([1, 2]))),[2])
+                                          tf.constant(np.array([1, 2]),dtype=tf.int64)),[2])
  
             #To compute the alpha and sigma values based on iteration
             #number
             learning_rate_op = tf.subtract(1.0, tf.div(self._iter_input,
                                                   self._n_iterations))
-            _alpha_op = tf.muliply(alpha, learning_rate_op)
+            _alpha_op = tf.multiply(alpha, learning_rate_op)
             _sigma_op = tf.multiply(sigma, learning_rate_op)
  
             #Construct the op that will generate a vector with learning
@@ -103,7 +103,7 @@ class SOM(object):
             bmu_distance_squares = tf.reduce_sum(tf.pow(tf.subtract(
                 self._location_vects, tf.stack(
                     [bmu_loc for i in range(m*n)])), 2), 1)
-            neighbourhood_func = tf.exp(tf.neg(tf.div(tf.cast(
+            neighbourhood_func = tf.exp(tf.negative(tf.div(tf.cast(
                 bmu_distance_squares, "float32"), tf.pow(_sigma_op, 2))))
             learning_rate_op = tf.multiply(_alpha_op, neighbourhood_func)
  
