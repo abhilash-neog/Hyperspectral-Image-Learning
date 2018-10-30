@@ -1,235 +1,125 @@
-import os
-from spectral import *
-import tensorflow as tf
+
+# coding: utf-8
+
+# 
+# # Self Organizing Maps example - California Housing
+
+# In this document, the SOMPY lib is going to be used in order to provide an example of usage of the Self Organising Maps algorithm. The data to be used will be the California Housing dataset, included in the SciKit Learn library and included below
+
+# In[3]:
+
+#get_ipython().magic('matplotlib inline')
 import numpy as np
+import os
+import scipy.io as sio
+from spectral import *
 from matplotlib import pyplot as plt
+from sompy.sompy import SOMFactory
+#from sklearn.datasets import fetch_california_housing
 
-class SOM(object):
-    """
-    2-D Self-Organizing Map with Gaussian Neighbourhood function
-    and linearly decreasing learning rate.
-    """
- 
-    #To check if the SOM has been trained
-    _trained = False
- 
-    def __init__(self, m, n, dim, n_iterations=100, alpha=None, sigma=None):
-        """
-        Initializes all necessary components of the TensorFlow
-        Graph.
- 
-        m X n are the dimensions of the SOM. 'n_iterations' should
-        should be an integer denoting the number of iterations undergone
-        while training.
-        'dim' is the dimensionality of the training inputs.
-        'alpha' is a number denoting the initial time(iteration no)-based
-        learning rate. Default value is 0.3
-        'sigma' is the the initial neighbourhood value, denoting
-        the radius of influence of the BMU while training. By default, its
-        taken to be half of max(m, n).
-        """
- 
-        #Assign required variables first
-        self._m = m
-        self._n = n
-        if alpha is None:
-            alpha = 0.3
-        else:
-            alpha = float(alpha)
-        if sigma is None:
-            sigma = max(m, n) / 2.0
-        else:
-            sigma = float(sigma)
-        self._n_iterations = abs(int(n_iterations))
- 
-        ##INITIALIZE GRAPH
-        self._graph = tf.Graph()
- 
-        ##POPULATE GRAPH WITH NECESSARY COMPONENTS
-        with self._graph.as_default():
- 
-            ##VARIABLES AND CONSTANT OPS FOR DATA STORAGE
- 
-            #Randomly initialized weightage vectors for all neurons,
-            #stored together as a matrix Variable of size [m*n, dim]
-            self._weightage_vects = tf.Variable(tf.random_normal(
-                [m*n, dim]))
- 
-            #Matrix of size [m*n, 2] for SOM grid locations
-            #of neurons
-            self._location_vects = tf.constant(np.array(
-                list(self._neuron_locations(m, n))))
- 
-            ##PLACEHOLDERS FOR TRAINING INPUTS
-            #We need to assign them as attributes to self, since they
-            #will be fed in during training
- 
-            #The training vector
-            self._vect_input = tf.placeholder("float", [dim])
-            #Iteration number
-            self._iter_input = tf.placeholder("float")
- 
-            ##CONSTRUCT TRAINING OP PIECE BY PIECE
-            #Only the final, 'root' training op needs to be assigned as
-            #an attribute to self, since all the rest will be executed
-            #automatically during training
- 
-            #To compute the Best Matching Unit given a vector
-            #Basically calculates the Euclidean distance between every
-            #neuron's weightage vector and the input, and returns the
-            #index of the neuron which gives the least value
-            bmu_index = tf.argmin(tf.sqrt(tf.reduce_sum(
-                tf.pow(tf.subtract(self._weightage_vects, tf.stack(
-                    [self._vect_input for i in range(m*n)])), 2), 1)),
-                                  0)
- 
-            #This will extract the location of the BMU based on the BMU's
-            #index
-            slice_input = tf.pad(tf.reshape(bmu_index, [1]),
-                                 np.array([[0, 1]]))
-            bmu_loc = tf.reshape(tf.slice(self._location_vects, slice_input,
-                                          tf.constant(np.array([1, 2]),dtype=tf.int64)),[2])
- 
-            #To compute the alpha and sigma values based on iteration
-            #number
-            learning_rate_op = tf.subtract(1.0, tf.div(self._iter_input,
-                                                  self._n_iterations))
-            _alpha_op = tf.multiply(alpha, learning_rate_op)
-            _sigma_op = tf.multiply(sigma, learning_rate_op)
- 
-            #Construct the op that will generate a vector with learning
-            #rates for all neurons, based on iteration number and location
-            #wrt BMU.
-            bmu_distance_squares = tf.reduce_sum(tf.pow(tf.subtract(
-                self._location_vects, tf.stack(
-                    [bmu_loc for i in range(m*n)])), 2), 1)
-            neighbourhood_func = tf.exp(tf.negative(tf.div(tf.cast(
-                bmu_distance_squares, "float32"), tf.pow(_sigma_op, 2))))
-            learning_rate_op = tf.multiply(_alpha_op, neighbourhood_func)
- 
-            #Finally, the op that will use learning_rate_op to update
-            #the weightage vectors of all neurons based on a particular
-            #input
-            learning_rate_multiplier = tf.stack([tf.tile(tf.slice(
-                learning_rate_op, np.array([i]), np.array([1])), [dim])
-                                               for i in range(m*n)])
-            weightage_delta = tf.multiply(
-                learning_rate_multiplier,
-                tf.subtract(tf.stack([self._vect_input for i in range(m*n)]),
-                       self._weightage_vects))                                         
-            new_weightages_op = tf.add(self._weightage_vects,
-                                       weightage_delta)
-            self._training_op = tf.assign(self._weightage_vects,
-                                          new_weightages_op)                                       
- 
-            ##INITIALIZE SESSION
-            self._sess = tf.Session()
- 
-            ##INITIALIZE VARIABLES
-            init_op = tf.initialize_all_variables()
-            self._sess.run(init_op)
- 
-    def _neuron_locations(self, m, n):
-        """
-        Yields one by one the 2-D locations of the individual neurons
-        in the SOM.
-        """
-        #Nested iterations over both dimensions
-        #to generate all 2-D locations in the map
-        for i in range(m):
-            for j in range(n):
-                yield np.array([i, j])
- 
-    def train(self, input_vects):
-        """
-        Trains the SOM.
-        'input_vects' should be an iterable of 1-D NumPy arrays with
-        dimensionality as provided during initialization of this SOM.
-        Current weightage vectors for all neurons(initially random) are
-        taken as starting conditions for training.
-        """
- 
-        #Training iterations
-        for iter_no in range(self._n_iterations):
-            print("Iteration: ",iter_no)
-            #Train with each vector one by one
-            for input_vect in input_vects:
-                self._sess.run(self._training_op,
-                               feed_dict={self._vect_input: input_vect,
-                                          self._iter_input: iter_no})
- 
-        #Store a centroid grid for easy retrieval later on
-        centroid_grid = [[] for i in range(self._m)]
-        self._weightages = list(self._sess.run(self._weightage_vects))
-        self._locations = list(self._sess.run(self._location_vects))
-        for i, loc in enumerate(self._locations):
-            centroid_grid[loc[0]].append(self._weightages[i])
-        self._centroid_grid = centroid_grid
- 
-        self._trained = True
- 
-    def get_centroids(self):
-        """
-        Returns a list of 'm' lists, with each inner list containing
-        the 'n' corresponding centroid locations as 1-D NumPy arrays.
-        """
-        if not self._trained:
-            raise ValueError("SOM not trained yet")
-        return self._centroid_grid
- 
-    def map_vects(self, input_vects):
-        """
-        Maps each input vector to the relevant neuron in the SOM
-        grid.
-        'input_vects' should be an iterable of 1-D NumPy arrays with
-        dimensionality as provided during initialization of this SOM.
-        Returns a list of 1-D NumPy arrays containing (row, column)
-        info for each input vector(in the same order), corresponding
-        to mapped neuron.
-        """
- 
-        if not self._trained:
-            raise ValueError("SOM not trained yet")
- 
-        to_return = []
-        for vect in input_vects:
-            min_index = min([i for i in range(len(self._weightages))],
-                            key=lambda x: np.linalg.norm(vect-
-                                                         self._weightages[x]))
-            to_return.append(self._locations[min_index])
- 
-        return to_return
-    
 
-#img = open_image(r'C:\Users\admin\Hyperspectral-Image-Learning\HSI Classification using CNN\data\92AV3C.lan')
+# ## Data Loading
 
-#img = open_image(r'C:\Users\user\Desktop\Abhilash\Imp\CEERI\NN\Hyperspectral Image Visualization\92AV3C.lan')
+# First of all the data is loaded into the local environment as a numpy array. 
+
+# In[2]:
+
+#data = fetch_california_housing()
+#descr = data.DESCR
+#names = fetch_california_housing().feature_names+["HouseValue"]
 script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
 rel_path = "data/92AV3C.lan"
 abs_file_path = os.path.join(script_dir, rel_path)
+rel_path2 = "data/Indian_pines_gt.mat"
+abs_file_path2 = os.path.join(script_dir,rel_path2)
 
+gt = sio.loadmat(abs_file_path2)
 
+gtd = gt['indian_pines_gt']
+target = gtd.flatten()
 img = open_image(abs_file_path)
 imgX = img.load()
 imgX = imgX.reshape(145*145,220)
+names = [i for i in range(0,15)]
+data = np.column_stack([imgX, target])
+#print(descr)
+#print( "FEATURES: ", ", ".join(names))
 
-crop_classes = list(range(16))
 
-#Train a 20x30 SOM with 400 iterations
-som = SOM(20, 30, 220, 400)
-som.train(imgX)
+# ## SOM Training
 
-#Get output grid
-image_grid = som.get_centroids()
- 
-#Map colours to their closest neurons
-mapped = som.map_vects(crop_classes)
- 
-#Plot
-plt.imshow(image_grid)
-plt.title('Color SOM')
-for i, m in enumerate(mapped):
-    plt.text(m[1], m[0], crop_classes[i], ha='center', va='center',
-             bbox=dict(facecolor='white', alpha=0.5, lw=0))
-plt.show()
-        
+# The SOM training consists in 2 phases: the rough and the finetune one. The parameters that can be configured in the training step are:
+# 
+# - The size of each individual grid
+# - The rough and finetune iterations
+# - The rough and finetune initial and final radiuses
+# - The initialization mechanism (random/pca)
+# 
+# For the current example, only the rough/finetune iterations and the initialization mechanism parameters have been chosen. The other ones have not been specified so that the algorithm will choose them authomatically.  
+# 
+# For quantifying the error of the approximation, 2 metrics should be computed: 
+# 
+# - **The quantization error**: average distance between each data vector and its BMU.
+# - **The topographic error**: the proportion of all data vectors for which first and second BMUs are not adjacent units.
+# 
+# A rule of thumb is to generate several models with different parameters and choose the one which, having a topographic error very near to zero, has the lowest quantization error. It is important to hold the topographic error very low in order to make the components smooth and easy to understand. 
+
+# In[3]:
+
+#msz = calculate_msz(data)
+sm = SOMFactory().build(data, normalization = 'var', initialization='random', component_names=names)
+sm.train(n_job=1, verbose=False, train_rough_len=2, train_finetune_len=5)
+
+
+# In[4]:
+
+topographic_error = sm.calculate_topographic_error()
+quantization_error = np.mean(sm._bmu[1])
+print ("Topographic error = %s; Quantization error = %s" % (topographic_error, quantization_error))
+
+
+# ## Visualization
+
+# #### Components map
+
+# In[5]:
+
+from sompy.visualization.mapview import View2D
+view2D  = View2D(10,10,"rand data",text_size=10)
+view2D.show(sm, col_sz=4, which_dim="all", denormalize=True)
+
+
+# #### Hits map
+
+# In[6]:
+
+from sompy.visualization.bmuhits import BmuHitsView
+
+vhts  = BmuHitsView(10,10,"Hits Map",text_size=7)
+vhts.show(sm, anotate=True, onlyzeros=False, labelsize=12, cmap="Greys", logaritmic=False)
+
+
+# #### K-Means clustering
+
+# In[7]:
+
+from sompy.visualization.hitmap import HitMapView
+sm.cluster(4)
+hits  = HitMapView(10,10,"Clustering",text_size=7)
+a=hits.show(sm, labelsize=12)
+
+
+# ## Conclusions
+
+# From the visualizations above we can extract different conclusions like,
+# - The houses which have, on average, more bedrooms are generally on lower average income areas.
+# - The highest occupations occours only in cities where the population is high.
+# - The latitude and longitude of the samples have a strong negative correlation. It can be because California is diagonally oriented with respect to the coordinates system.
+# - The most demanded houses (AveOccup) are placed on the 37~38 latitude and -121.6~-121 longitude; i.e. near San-Francisco area
+# - Old houses are more likely to have less rooms and bedrooms on average.
+# - Low average income areas usually have less rooms and bedrooms than high average ones
+# - The house value seems to be related with the average income of the area where it sits.
+# 
+# It is important to remark that there are areas on the map where the density of instances is lower than others. It is represented by the hit map and it should be taken in consideration when interpreting the components map.
+# 
+# The clustering map can be used to help to find out the different behaviors represented in the components map.
