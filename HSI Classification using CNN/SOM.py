@@ -1,9 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Oct 29 21:02:11 2018
-
-@author: admin
-"""
+import os
 from spectral import *
 import tensorflow as tf
 import numpy as np
@@ -93,8 +88,7 @@ class SOM(object):
             slice_input = tf.pad(tf.reshape(bmu_index, [1]),
                                  np.array([[0, 1]]))
             bmu_loc = tf.reshape(tf.slice(self._location_vects, slice_input,
-                                          tf.constant(np.array([1, 2]))),
-                                 [2])
+                                          tf.constant(np.array([1, 2]))),[2])
  
             #To compute the alpha and sigma values based on iteration
             #number
@@ -206,7 +200,7 @@ class SOM(object):
         return to_return
     
 
-img = open_image(r'C:\Users\admin\Hyperspectral-Image-Learning\HSI Classification using CNN\data\92AV3C.lan')
+#img = open_image(r'C:\Users\admin\Hyperspectral-Image-Learning\HSI Classification using CNN\data\92AV3C.lan')
 
 #img = open_image(r'C:\Users\user\Desktop\Abhilash\Imp\CEERI\NN\Hyperspectral Image Visualization\92AV3C.lan')
 script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
