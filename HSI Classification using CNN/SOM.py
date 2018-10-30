@@ -151,6 +151,7 @@ class SOM(object):
  
         #Training iterations
         for iter_no in range(self._n_iterations):
+            print("Iteration: ",iter_no)
             #Train with each vector one by one
             for input_vect in input_vects:
                 self._sess.run(self._training_op,
@@ -215,14 +216,14 @@ imgX = imgX.reshape(145*145,220)
 crop_classes = list(range(16))
 
 #Train a 20x30 SOM with 400 iterations
-som = SOM(20, 30, 16, 400)
-som.train(crop_classes)
+som = SOM(20, 30, 220, 400)
+som.train(imgX)
 
 #Get output grid
 image_grid = som.get_centroids()
  
 #Map colours to their closest neurons
-mapped = som.map_vects(colors)
+mapped = som.map_vects(crop_classes)
  
 #Plot
 plt.imshow(image_grid)
