@@ -216,7 +216,7 @@ imgX = imgX.reshape(145*145,220)
 crop_classes = list(range(16))
 
 #Train a 20x30 SOM with 400 iterations
-som = SOM(20, 30, 220, 2)
+som = SOM(145, 145, 220, 2)
 som.train(imgX)
 
 #Get output grid
