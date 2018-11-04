@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Oct 30 13:37:51 2018
-
-@author: user
-"""
-
 #Import the library
 import SimpSOM as sps
 import os
@@ -24,6 +17,8 @@ img = open_image(abs_file_path)
 imgX = img.load()
 imgX = imgX.reshape(145*145,220)
 raw_data = imgX
+sps.run_colorsExample()
+"""
 #Build a network 20x20 with a weights format taken from the raw_data and activate Periodic Boundary Conditions. 
 net = sps.somNet(20, 20, raw_data, PBC=True)
 
@@ -43,3 +38,4 @@ net.project(raw_data, labels=gtd.flatten())
 
 #Cluster the datapoints according to the Quality Threshold algorithm.
 net.cluster(raw_data, type='qthresh')	
+"""
