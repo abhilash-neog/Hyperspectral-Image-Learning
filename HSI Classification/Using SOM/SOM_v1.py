@@ -17,25 +17,22 @@ img = open_image(abs_file_path)
 imgX = img.load()
 imgX = imgX.reshape(145*145,220)
 raw_data = imgX
-sps.run_colorsExample()
-"""
-#Build a network 20x20 with a weights format taken from the raw_data and activate Periodic Boundary Conditions. 
-net = sps.somNet(20, 20, raw_data, PBC=True)
-
-#Train the network for 10000 epochs and with initial learning rate of 0.1. 
-net.train(0.01, 10)
-
-#Save the weights to file
-net.save('filename_weights')
-
+#sps.run_colorsExample()
+def HSI_SOM(x,y,data):
+    net = sps.somNet(x,y,data,PBC=True)
+    net.train(0.01,10)
+    net.save('HSI_SOM_weights')
+    return net
+    
+x = 145
+y = 145
+net = HSI_SOM(x,y,raw_data)
+net.nodes_graph(colnum=0)
 #Print a map of the network nodes and colour them according to the first feature (column number 0) of the dataset
 #and then according to the distance between each node and its neighbours.
-net.nodes_graph(colnum=0)
 net.diff_graph()
-
 #Project the datapoints on the new 2D network map.
-net.project(raw_data, labels=gtd.flatten())
-
+net.project(raw_data,labels=range(0,16))
 #Cluster the datapoints according to the Quality Threshold algorithm.
-net.cluster(raw_data, type='qthresh')	
-"""
+net.cluster(raw_data,type='qthresh')
+
