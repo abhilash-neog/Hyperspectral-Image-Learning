@@ -21,15 +21,12 @@ imgX = imgX.reshape(145*145,220)
 raw_data = imgX
 
 def dimensionality_reduction(dat):
-    dat = dat.reshape(145*145,150)
-
+    #dat = dat.reshape(145*145,220)
     dat = StandardScaler().fit_transform(dat)
-
     pca = PCA(n_components = 100, svd_solver='randomized',whiten=True)
-
     principal_components = pca.fit_transform(dat)
-
     principal_components = principal_components.reshape(145*145,100)
+    return principal_components
 
 
 #sps.run_colorsExample()
