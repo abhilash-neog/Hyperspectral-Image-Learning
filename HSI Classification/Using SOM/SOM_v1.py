@@ -3,6 +3,8 @@ import SimpSOM as sps
 import os
 from spectral import *
 import scipy.io as sio
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
 
 script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
 rel_path = "data/92AV3C.lan"
@@ -17,6 +19,19 @@ img = open_image(abs_file_path)
 imgX = img.load()
 imgX = imgX.reshape(145*145,220)
 raw_data = imgX
+
+def dimensionality_reduction(dat):
+    dat = dat.reshape(145*145,150)
+
+    dat = StandardScaler().fit_transform(dat)
+
+    pca = PCA(n_components = 100, svd_solver='randomized',whiten=True)
+
+    principal_components = pca.fit_transform(dat)
+
+    principal_components = principal_components.reshape(145*145,100)
+
+
 #sps.run_colorsExample()
 def HSI_SOM(x,y,data):
     net = sps.somNet(x,y,data,PBC=True)
@@ -26,6 +41,7 @@ def HSI_SOM(x,y,data):
     
 x = 145
 y = 145
+raw_data = dimensionality_reduction(raw_data)
 net = HSI_SOM(x,y,raw_data)
 net.nodes_graph(colnum=0)
 #Print a map of the network nodes and colour them according to the first feature (column number 0) of the dataset
