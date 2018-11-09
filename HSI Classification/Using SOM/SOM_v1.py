@@ -38,6 +38,7 @@ def HSI_SOM(x,y,data):
     
 x = 145
 y = 145
+
 raw_data = dimensionality_reduction(raw_data)
 net = HSI_SOM(x,y,raw_data)
 net.nodes_graph(colnum=0)
