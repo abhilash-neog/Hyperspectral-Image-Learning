@@ -23,9 +23,12 @@ raw_data = imgX
 def dimensionality_reduction(dat):
     #dat = dat.reshape(145*145,220)
     dat = StandardScaler().fit_transform(dat)
-    pca = PCA(n_components = 100, svd_solver='randomized',whiten=True)
+    pca = PCA(n_components = 50, svd_solver='randomized',whiten=True)
+    print("explained_variance_ration:",sum(pca.fit(dat).explained_variance_ratio_))
     principal_components = pca.fit_transform(dat)
-    principal_components = principal_components.reshape(145*145,100)
+    
+    principal_components = principal_components.reshape(145*145,50)
+    
     return principal_components
 
 
@@ -36,8 +39,8 @@ def HSI_SOM(x,y,data):
     net.save('HSI_SOM_weights')
     return net
     
-x = 145
-y = 145
+x = 17#145
+y = 220#145
 
 raw_data = dimensionality_reduction(raw_data)
 net = HSI_SOM(x,y,raw_data)
