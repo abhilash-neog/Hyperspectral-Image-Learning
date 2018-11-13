@@ -37,15 +37,15 @@ def dimensionality_reduction(dat):
     print("explained_variance_ration:",sum(pca.fit(dat).explained_variance_ratio_))
     principal_components = pca.fit_transform(dat)
     
-    principal_components = principal_components.reshape(145*145,100)
+    principal_components = principal_components.reshape(10249,100)
     
     return principal_components
 
 
-#raw_data = dimensionality_reduction(raw_data)
-map_dim1 = 16
-map_dim2 = 220
-som = MiniSom(map_dim1, map_dim2, 220, sigma=4.0, learning_rate=0.5,neighborhood_function='gaussian')
+dat = dimensionality_reduction(dat)
+map_dim1 = 100
+map_dim2 = 100
+som = MiniSom(map_dim1, map_dim2, 100, sigma=4.0, learning_rate=0.5,neighborhood_function='gaussian')
 #som.random_weights_init(W)
 som.pca_weights_init(dat)
 print("Training...")
@@ -58,7 +58,7 @@ im = 0
 for x, t in zip(dat, alx):  # scatterplot
     w = som.winner(x)
     wmap[w] = im
-    plt.text(w[0]+.5,  w[1]+.5, str(t), color=plt.cm.rainbow(t / 16.), fontdict={'weight': 'bold',  'size': 14})
+    plt.text(w[0]+np.random.rand()*.9,  w[1]+np.random.rand()*.9, str(t), color=plt.cm.rainbow(t / 16.), fontdict={'weight': 'bold',  'size': 14})
     im = im + 1
 plt.axis([0, som.get_weights().shape[0], 0,  som.get_weights().shape[1]])
 #plt.savefig('som_pines.png')
