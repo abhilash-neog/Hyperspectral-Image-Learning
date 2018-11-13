@@ -44,11 +44,12 @@ def dimensionality_reduction(dat):
 
 
 dat = dimensionality_reduction(dat)
-map_dim1 = 100
-map_dim2 = 100
-som = MiniSom(map_dim1, map_dim2, 100, sigma=4.0, learning_rate=0.5,neighborhood_function='gaussian')
+map_dim1 = 16
+map_dim2 = 1
+som = MiniSom(map_dim1, map_dim2, 100, sigma=1.0, learning_rate=0.5,neighborhood_function='gaussian')
 #som.random_weights_init(W)
-som.pca_weights_init(dat)
+#som.pca_weights_init(dat)
+som.random_weights_init(dat)
 print("Training...")
 som.train_random(dat, 10000)
 print("\n...ready!")
@@ -62,14 +63,20 @@ for x, t in zip(dat, alx):  # scatterplot
     plt.text(w[0]+np.random.rand()*.9,  w[1]+np.random.rand()*.9, str(t), color=plt.cm.rainbow(t / 16.), fontdict={'weight': 'bold',  'size': 14})
     im = im + 1
 plt.axis([0, som.get_weights().shape[0], 0,  som.get_weights().shape[1]])
-#plt.savefig('som_pines.png')
+plt.savefig('som_pines_1.pdf')
 plt.show()
 #qnt = som.quantization(raw_data)
 #print(qnt)
-with open('som_model.p','wb') as outfile:
+with open('som_model_1.p','wb') as outfile:
     pickle.dump(som,outfile)
 #som.quantization_error(dat)
 #Out[131]: 9.607098806680474
+    
+#16X100
+#som.quantization_error(dat)
+#Out[134]: 9.703761218380942
+
+
 #qe : Average distance between each data vector and its BMU.
 #       Measures map resolution.
 """
