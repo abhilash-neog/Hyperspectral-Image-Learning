@@ -32,14 +32,17 @@ class SOM(object):
         #Assign required variables first
         self._m = m
         self._n = n
+        
         if alpha is None:
             alpha = 0.3
         else:
             alpha = float(alpha)
+        
         if sigma is None:
             sigma = max(m, n) / 2.0
         else:
             sigma = float(sigma)
+        
         self._n_iterations = abs(int(n_iterations))
  
         ##INITIALIZE GRAPH
