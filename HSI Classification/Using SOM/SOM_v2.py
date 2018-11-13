@@ -34,9 +34,9 @@ def dimensionality_reduction(dat):
     return principal_components
 
 
-raw_data = dimensionality_reduction(raw_data)
+#raw_data = dimensionality_reduction(raw_data)
 map_dim = 50
-som = MiniSom(map_dim, map_dim, 100, sigma=4.0, learning_rate=0.5,neighborhood_function='gaussian')
+som = MiniSom(map_dim, map_dim, 220, sigma=4.0, learning_rate=0.5,neighborhood_function='gaussian')
 #som.random_weights_init(W)
 som.pca_weights_init(raw_data)
 print("Training...")
@@ -50,7 +50,7 @@ for x, t in zip(raw_data, gtd):  # scatterplot
     w = som.winner(x)
     wmap[w] = im
     plt. text(w[0]+.5,  w[1]+.5,  str(t),
-              color=plt.cm.rainbow(t / 16), fontdict={'weight': 'bold',  'size': 14})
+              color=plt.cm.rainbow(t / 16.), fontdict={'weight': 'bold',  'size': 14})
     im = im + 1
 plt.axis([0, som.get_weights().shape[0], 0,  som.get_weights().shape[1]])
 #plt.savefig('som_pines.png')
