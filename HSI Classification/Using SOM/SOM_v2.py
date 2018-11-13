@@ -22,7 +22,7 @@ imgX = img.load()
 imgX = imgX.reshape(145*145,220)
 raw_data = imgX
 
-map_dim = 16
+map_dim = 145
 
 som = MiniSom(map_dim, map_dim, 220, sigma=1.0, learning_rate=0.5,neighborhood_function='gaussian', random_seed=10)
 #som.random_weights_init(W)
@@ -43,8 +43,7 @@ for i in range(max_iter):
         q_error_pca_init.append(error)
         iter_x.append(i)
         sys.stdout.write(f'\riteration={i:2d} status={percent:0.2f}% error={error}')
-        
-        
+                
 plt.plot(iter_x, q_error_pca_init)
 plt.ylabel('quantization error')
 plt.xlabel('iteration index')
