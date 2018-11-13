@@ -4,6 +4,7 @@ import os
 from spectral import *
 import scipy.io as sio
 import matplotlib.pyplot as plt
+import pickle
 #import sys
 from sklearn.preprocessing import scale
 from sklearn.decomposition import PCA
@@ -65,8 +66,12 @@ plt.axis([0, som.get_weights().shape[0], 0,  som.get_weights().shape[1]])
 plt.show()
 #qnt = som.quantization(raw_data)
 #print(qnt)
-
-
+with open('som_model.p','wb') as outfile:
+    pickle.dump(som,outfile)
+#som.quantization_error(dat)
+#Out[131]: 9.607098806680474
+#qe : Average distance between each data vector and its BMU.
+#       Measures map resolution.
 """
 max_iter = 500
 q_error_pca_init = []
