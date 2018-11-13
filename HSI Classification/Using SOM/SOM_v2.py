@@ -41,7 +41,7 @@ for x, t in zip(raw_data, gtd):  # scatterplot
               color=plt.cm.rainbow(t / 16.), fontdict={'weight': 'bold',  'size': 11})
     im = im + 1
 plt.axis([0, som.get_weights().shape[0], 0,  som.get_weights().shape[1]])
-plt.savefig('som_pines.png')
+#plt.savefig('som_pines.png')
 plt.show()
 #qnt = som.quantization(raw_data)
 #print(qnt)
