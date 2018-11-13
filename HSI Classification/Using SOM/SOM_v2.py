@@ -22,6 +22,14 @@ img = open_image(abs_file_path)
 imgX = img.load()
 imgX = imgX.reshape(145*145,220)
 raw_data = imgX
+
+alp = np.argsort(gtd)
+dat = raw_data[alp]
+dat = dat[10776:]
+
+alx = np.sort(gtd)
+alx = alx[10776:]
+
 def dimensionality_reduction(dat):
     #dat = dat.reshape(145*145,220)
     dat = StandardScaler().fit_transform(dat)
@@ -35,28 +43,30 @@ def dimensionality_reduction(dat):
 
 
 #raw_data = dimensionality_reduction(raw_data)
-map_dim = 50
-som = MiniSom(map_dim, map_dim, 220, sigma=4.0, learning_rate=0.5,neighborhood_function='gaussian')
+map_dim1 = 16
+map_dim2 = 220
+som = MiniSom(map_dim1, map_dim2, 220, sigma=4.0, learning_rate=0.5,neighborhood_function='gaussian')
 #som.random_weights_init(W)
-som.pca_weights_init(raw_data)
+som.pca_weights_init(dat)
 print("Training...")
-som.train_random(raw_data, 5000)
+som.train_random(dat, 10000)
 print("\n...ready!")
 
 plt.figure(figsize=(16, 16))
 wmap = {}
 im = 0
-for x, t in zip(raw_data, gtd):  # scatterplot
+for x, t in zip(dat, alx):  # scatterplot
     w = som.winner(x)
     wmap[w] = im
-    plt. text(w[0]+.5,  w[1]+.5,  str(t),
-              color=plt.cm.rainbow(t / 16.), fontdict={'weight': 'bold',  'size': 14})
+    plt.text(w[0]+.5,  w[1]+.5, str(t), color=plt.cm.rainbow(t / 16.), fontdict={'weight': 'bold',  'size': 14})
     im = im + 1
 plt.axis([0, som.get_weights().shape[0], 0,  som.get_weights().shape[1]])
 #plt.savefig('som_pines.png')
 plt.show()
 #qnt = som.quantization(raw_data)
 #print(qnt)
+
+
 """
 max_iter = 500
 q_error_pca_init = []
