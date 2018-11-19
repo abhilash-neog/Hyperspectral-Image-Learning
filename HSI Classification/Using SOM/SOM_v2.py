@@ -22,17 +22,16 @@ gtd = gtd.flatten()
 img = open_image(abs_file_path)
 imgX = img.load()
 imgX = imgX.reshape(145*145,220)
-raw_data = imgX
+#raw_data = imgX
 
 
 map_dim = 145
 
-alp = np.argsort(gtd)
-dat = raw_data[alp]
-dat = dat[10776:]
-
-alx = np.sort(gtd)
-alx = alx[10776:]
+#alp = np.argsort(gtd)
+#dat = raw_data[alp]
+#dat = dat[10776:]
+#alx = np.sort(gtd)
+#alx = alx[10776:]
 
 def dimensionality_reduction(dat):
     #dat = dat.reshape(145*145,220)
