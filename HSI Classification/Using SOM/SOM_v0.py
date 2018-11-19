@@ -47,7 +47,7 @@ class SOM(object):
  
         ##INITIALIZE GRAPH
         self._graph = tf.Graph()
- 
+        tf.device("/gpu:0")
         ##POPULATE GRAPH WITH NECESSARY COMPONENTS
         with self._graph.as_default():
  
@@ -126,11 +126,16 @@ class SOM(object):
                                           new_weightages_op)                                       
  
             ##INITIALIZE SESSION
-            self._sess = tf.Session()
+            self._sess = tf.Session(config=tf.ConfigProto(log_device_placement=True))
+            
+            with self._sess:    
+                init_op = tf.global_variables_initializer()
+                print(self._sess.run(init_op))
+
+#            self._sess = tf.Session()
  
             ##INITIALIZE VARIABLES
-            init_op = tf.initialize_all_variables()
-            self._sess.run(init_op)
+            
  
     def _neuron_locations(self, m, n):
         """
