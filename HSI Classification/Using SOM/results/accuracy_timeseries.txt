@@ -1,0 +1,3 @@
+1. Train -> Sample 1  0th hour  Accuracy
+   Test ->  Sample 1  24hour     7.29
+   Test -> Sample 1   18 days    7.29355
