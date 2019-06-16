@@ -20,6 +20,6 @@ The code is written in python. So recommended following:
 
 4. SOM tested on time-series HSI
 
-5. Quantized and clustered images can be found in the result section of directory Using SOM
+5. Quantized and clustered images can be found in the 'result' section of directory 'Using SOM'
 
 
