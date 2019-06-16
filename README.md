@@ -16,6 +16,10 @@ The code is written in python. So recommended following:
 
 2. The HSI classifier code models a network to learn the features of every class's pixels ,to be able to classify any given pixel accurately. Level of accuracy - 61%
 
-3. Tumor Image plotting is a simple workaround with the pillow library, extracting pixels from image channels and plotting a graph
+3. SOM implemented and tested over individual HSI - quantization error 0.9%
+
+4. SOM tested on time-series HSI
+
+5. Quantized and clustered images can be found in the result section
 
 
